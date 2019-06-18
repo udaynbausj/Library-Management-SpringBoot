@@ -3,7 +3,7 @@ package io.code.lms.Enums;
 
 public enum Roles {
     LIBRARIAN(1,"Librarian"),
-    MEMBER(2,"Member");
+    SCHOLAR(2,"Scholar");
 
     Roles(Integer id, String roleName) {
         this.id = id;
