@@ -1,5 +1,7 @@
 package io.code.lms.Dtos;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,8 +19,6 @@ public class BulkBookIdRequestDto implements Serializable {
 
     @Override
     public String toString() {
-        return "BulkBookIdRequestDto{" +
-                "bookIds=" + bookIds +
-                '}';
+        return new Gson().toJson(this);
     }
 }

@@ -1,41 +1,34 @@
 package io.code.lms.Entities;
 
-
 import com.google.gson.Gson;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "book")
-public class Book implements Serializable {
+@Table(name = "scholar")
+public class Scholar implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "title")
-    private String title;
+    @Column(name = "name")
+    private String name;
 
-    @NotNull
-    @Column(name = "availability_count")
-    private Integer availabilityCount;
+    @Column(name = "status")
+    private Integer status;
 
-    @Column(name = "publication")
-    private String  publication;
-
-    @CreatedDate
-    @NotNull
     @Column(name = "created_at")
+    @CreatedDate
     private Date createdAt;
 
-    @LastModifiedDate
-    @NotNull
     @Column(name = "updated_at")
+    @LastModifiedDate
     private Date updatedAt;
 
     public Integer getId() {
@@ -46,28 +39,20 @@ public class Book implements Serializable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Integer getAvailabilityCount() {
-        return availabilityCount;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setAvailabilityCount(Integer availabilityCount) {
-        this.availabilityCount = availabilityCount;
-    }
-
-    public String getPublication() {
-        return publication;
-    }
-
-    public void setPublication(String publication) {
-        this.publication = publication;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getCreatedAt() {
