@@ -1,0 +1,8 @@
+[http-nio-9999-exec-1] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - 
+Saving scholar entity :  {"name":"rock","status":1}
+[http-nio-9999-exec-1] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - 
+Saving scholar entity :  {"name":"rock","status":1}
+[http-nio-9999-exec-1] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - 
+Saving scholar entity :  {"name":"rock","status":1}
+[http-nio-9999-exec-10] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Saving scholar entity :  {"name":"Uday","status":1}
+[http-nio-9999-exec-10] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Successfully saved into db

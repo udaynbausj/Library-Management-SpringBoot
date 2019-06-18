@@ -3,6 +3,7 @@ package io.code.lms.Services;
 import io.code.lms.Dtos.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface LibrarianService {
     void addBooks(List<BookDto>bookDtoList);
@@ -10,7 +11,7 @@ public interface LibrarianService {
     void getBook(BulkBookIdRequestDto bulkBookIdRequestDto);
     void getAllBooks();
     void updateAvailabilityCountOfBook(Integer bookId,Integer count);
-    void addScholar(List<ScholarDto>scholarDtoList);
+    Map<String ,String > addScholar(List<ScholarDto>scholarDtoList);
     void deleteScholar(BulkScholarIdRequestDto bulkScholarIdRequestDto);
     void issueBookToScholar(Integer bookId);
     void issueBooksToScholarInBulk(BulkBookIdRequestDto bulkBookIdRequestDto);

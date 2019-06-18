@@ -9,6 +9,9 @@ public class ScholarDto implements Serializable {
     private String name;
     private Integer status;
 
+    public ScholarDto() {
+    }
+
     public String getName() {
         return name;
     }
@@ -27,6 +30,9 @@ public class ScholarDto implements Serializable {
 
     @Override
     public String toString() {
-        return new Gson().toJson(this);
+        return "ScholarDto{" +
+                "name='" + name + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
