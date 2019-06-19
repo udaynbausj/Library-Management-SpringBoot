@@ -2,10 +2,12 @@ package io.code.lms.Dtos;
 
 import com.google.gson.Gson;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 public class ScholarDto implements Serializable {
 
+    @NotEmpty(message = "Name should not be null ")
     private String name;
     private Integer status;
 

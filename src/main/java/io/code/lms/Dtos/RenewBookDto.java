@@ -2,11 +2,15 @@ package io.code.lms.Dtos;
 
 import com.google.gson.Gson;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 public class RenewBookDto implements Serializable {
 
+    @NotEmpty(message = "ScholarId should not be empty")
     private Integer scholarId;
+
+    @NotEmpty(message = "BookId should not be empty")
     private Integer bookId;
 
     public Integer getScholarId() {
