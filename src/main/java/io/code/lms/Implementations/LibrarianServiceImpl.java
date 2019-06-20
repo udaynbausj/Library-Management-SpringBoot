@@ -46,8 +46,8 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public Map<String ,String > addScholar(List<ScholarDto> scholarDtoList) throws DBExceptionBase {
+        Map<String ,String >result = new HashMap<>();
         Iterator iterator = scholarDtoList.iterator();
-        Map<String ,String >returnMap = new HashMap<>();
         while(iterator.hasNext()) {
             ScholarDto scholarDto = (ScholarDto) iterator.next();
             Scholar scholar = new Scholar();
@@ -63,10 +63,10 @@ public class LibrarianServiceImpl implements LibrarianService {
                         + sqle.getLocalizedMessage());
                 throw sqle;
             }
-            returnMap.put("status" , "success");
             logger.info("Successfully saved into db");
         }
-        return returnMap;
+        result.put("status","success");
+        return result;
     }
 
     @Override
