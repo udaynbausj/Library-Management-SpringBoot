@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface LibrarianService {
-    void addBooks(List<BookDto>bookDtoList);
+    void addBooks(List<BookDto>bookDtoList) ;
     void deleteBooks(BulkBookIdRequestDto bulkBookIdRequestDto);
     void getBook(BulkBookIdRequestDto bulkBookIdRequestDto);
     void getAllBooks();
     void updateAvailabilityCountOfBook(Integer bookId,Integer count);
-    Map<String ,String > addScholar(List<ScholarDto>scholarDtoList);
+    Map<String ,String > addScholar(List<ScholarDto> scholarDtoList) throws Exception;
     void deleteScholar(BulkScholarIdRequestDto bulkScholarIdRequestDto);
     void issueBookToScholar(Integer bookId);
     void issueBooksToScholarInBulk(BulkBookIdRequestDto bulkBookIdRequestDto);

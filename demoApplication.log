@@ -6,3 +6,9 @@ Saving scholar entity :  {"name":"rock","status":1}
 Saving scholar entity :  {"name":"rock","status":1}
 [http-nio-9999-exec-10] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Saving scholar entity :  {"name":"Uday","status":1}
 [http-nio-9999-exec-10] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Successfully saved into db
+[http-nio-9999-exec-7] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Saving scholar entity :  {"name":"","status":0}
+[http-nio-9999-exec-7] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Successfully saved into db
+[http-nio-9999-exec-2] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Saving scholar entity :  {"status":0}
+[http-nio-9999-exec-2] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Successfully saved into db
+[http-nio-9999-exec-2] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Saving scholar entity :  {"name":"random_name","status":0}
+[http-nio-9999-exec-2] INFO  io.code.lms.Implementations.LibrarianServiceImpl  - Successfully saved into db
