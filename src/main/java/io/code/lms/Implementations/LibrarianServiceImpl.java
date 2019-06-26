@@ -186,6 +186,14 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public void renewBookScholarRequest(Integer bookId , Integer scholarId) {
+
+        if(!bookCrudDao.findById(bookId).isPresent() ) {
+            throw new RecordNotFoundException("No book with given id " + bookId);
+        }
+
+        if(!scholarCrudDao.findById(scholarId).isPresent()) {
+            throw new RecordNotFoundException("No scholar with given id " + scholarId);
+        }
             MDC.put("bookId" , bookId);
             MDC.put("scholarId",scholarId);
             Integer numOfTimesRenewed = bookIdScholarIdMappingDao
