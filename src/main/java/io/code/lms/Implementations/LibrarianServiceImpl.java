@@ -6,6 +6,7 @@ import io.code.lms.Entities.Scholar;
 import io.code.lms.Exceptions.CustomExceptions.RecordNotFoundException;
 import io.code.lms.Exceptions.SQLExceptions.DBExceptionBase;
 import io.code.lms.Repositories.BookCrudDao;
+import io.code.lms.Repositories.BookIdScholarIdMappingDao;
 import io.code.lms.Repositories.ScholarCrudDao;
 import io.code.lms.Services.LibrarianService;
 import org.apache.log4j.Logger;
@@ -24,6 +25,9 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Autowired
     private BookCrudDao bookCrudDao;
+
+    @Autowired
+    private BookIdScholarIdMappingDao bookIdScholarIdMapping;
 
     private static Logger logger = Logger.getLogger(LibrarianServiceImpl.class);
 
