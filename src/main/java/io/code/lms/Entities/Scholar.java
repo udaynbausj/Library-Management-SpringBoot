@@ -31,6 +31,12 @@ public class Scholar implements Serializable {
     @LastModifiedDate
     private Date updatedAt;
 
+    @Column(name = "fine")
+    private Float fine;
+
+    @Column(name = "num_of_books_present")
+    private Integer numOfBooksPresent;
+
     public Integer getId() {
         return id;
     }
@@ -69,6 +75,22 @@ public class Scholar implements Serializable {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Float getFine() {
+        return fine;
+    }
+
+    public void setFine(Float fine) {
+        this.fine = fine;
+    }
+
+    public Integer getNumOfBooksPresent() {
+        return numOfBooksPresent;
+    }
+
+    public void setNumOfBooksPresent(Integer numOfBooksPresent) {
+        this.numOfBooksPresent = numOfBooksPresent;
     }
 
     @Override

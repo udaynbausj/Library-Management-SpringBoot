@@ -1,17 +1,18 @@
 package io.code.lms.Implementations;
 
+import io.code.lms.Constants.Constants;
 import io.code.lms.Dtos.*;
 import io.code.lms.Entities.Book;
 import io.code.lms.Entities.BookIdScholarIdMapping;
 import io.code.lms.Entities.Scholar;
-import io.code.lms.Exceptions.CustomExceptions.DependencyException;
-import io.code.lms.Exceptions.CustomExceptions.RecordNotFoundException;
+import io.code.lms.Exceptions.CustomExceptions.*;
 import io.code.lms.Exceptions.SQLExceptions.DBExceptionBase;
 import io.code.lms.Repositories.BookCrudDao;
 import io.code.lms.Repositories.BookIdScholarIdMappingDao;
 import io.code.lms.Repositories.ScholarCrudDao;
 import io.code.lms.Services.LibrarianService;
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,11 +56,10 @@ public class LibrarianServiceImpl implements LibrarianService {
         Consumer<Integer> bookIdConsumer = bookId -> {
             Optional<Book>optional =  (bookCrudDao.findById(bookId));
             if(optional.isPresent()) {
-                Optional<BookIdScholarIdMapping>optional1 =
+                Optional<List<BookIdScholarIdMapping> >optional1 =
                         Optional.ofNullable(bookIdScholarIdMappingDao.findByBookId(bookId));
                 if(optional1.isPresent()) {
-                    throw new DependencyException("Book can't be deleted as, it is associated with scholar : "
-                            + optional1.get().getScholarId());
+                    throw new DependencyException("Book can't be deleted as, it is associated with scholar ");
                 }
                 logger.info("deleting book-id " + bookId);
                 bookCrudDao.deleteById(bookId);
@@ -92,7 +92,9 @@ public class LibrarianServiceImpl implements LibrarianService {
         Optional<Book>optionalBook = bookCrudDao.findById(bookId);
         if(optionalBook.isPresent()) {
             Book book = optionalBook.get();
-            book.setAvailabilityCount(count);
+            Integer availabilityCount = book.getAvailabilityCount();
+            availabilityCount += count;
+            book.setAvailabilityCount(availabilityCount);
             bookCrudDao.save(book);
         } else {
             throw new RecordNotFoundException("Record not found for given bookId : " + bookId);
@@ -130,11 +132,11 @@ public class LibrarianServiceImpl implements LibrarianService {
         //you cannot delete a scholar if this scholar has any book with him.
         //check if this scholar has ansy bookId associated with him
         Consumer<Integer> scholarIdConsumer = scholarId -> {
-            Optional<BookIdScholarIdMapping>optional = Optional.ofNullable(
+            Optional< List<BookIdScholarIdMapping> >optional = Optional.ofNullable(
                     bookIdScholarIdMappingDao.findByScholarId(scholarId));
             if(optional.isPresent()) {
-                throw new DependencyException("Scholar cannot be deleted as a book with id : {} is " +
-                        "associated with him" + optional.get().getBookId());
+                throw new DependencyException("Scholar cannot be deleted as a book  is " +
+                        "associated with him");
             }
             logger.info("Deleting scholar .. ");
             scholarCrudDao.deleteById(scholarId);
@@ -144,23 +146,74 @@ public class LibrarianServiceImpl implements LibrarianService {
     }
 
     @Override
-    public void issueBookToScholar(Integer bookId) {
+    public void issueBookToScholar(Integer bookId,Integer scholarId) {
 
+        if(!bookCrudDao.findById(bookId).isPresent() ) {
+            throw new RecordNotFoundException("No book with given id " + bookId);
+        }
+
+        if(!scholarCrudDao.findById(scholarId).isPresent()) {
+            throw new RecordNotFoundException("No scholar with given id " + scholarId);
+        }
+
+        Integer numOfBooksScholarHas = bookIdScholarIdMappingDao.findByScholarId(scholarId).size();
+        if (numOfBooksScholarHas == Constants.MAX_BOOK_ISSUE) {
+            throw new MaxBooksAlreadyIssuedException("Scholar already have been issued with max no of books ");
+        } else {
+            if(scholarCrudDao.findById(scholarId).get().getFine() > 0) {
+                throw new FineChargeException("Scholar has fine overdue. It should be resolved");
+            } else {
+                if(bookCrudDao.findById(bookId).get().getAvailabilityCount() > 0) {
+                    BookIdScholarIdMapping bookIdScholarIdMapping = new BookIdScholarIdMapping();
+                    bookIdScholarIdMapping.setBookId(bookId);
+                    bookIdScholarIdMapping.setScholarId(scholarId);
+                    bookIdScholarIdMapping.setIssuedOn(new Date());
+                    bookIdScholarIdMappingDao.save(bookIdScholarIdMapping);
+                }
+                this.updateAvailabilityCountOfBook(bookId,-1);
+                scholarCrudDao.findById(scholarId).get().setNumOfBooksPresent(++numOfBooksScholarHas);
+            }
+        }
     }
 
     @Override
-    public void issueBooksToScholarInBulk(BulkBookIdRequestDto bulkBookIdRequestDto) {
-
+    public void issueBooksToScholarInBulk(BulkBookIdRequestDto bulkBookIdRequestDto, Integer scholarId) {
+        Consumer<Integer>bookIdConsumer = bookId -> {
+            this.issueBookToScholar(bookId,scholarId);
+        };
+        bulkBookIdRequestDto.getBookIds().forEach(bookIdConsumer);
     }
 
     @Override
-    public void renewBookScholarRequest(List<RenewBookDto> renewBookDtoList) {
-
+    public void renewBookScholarRequest(Integer bookId , Integer scholarId) {
+            MDC.put("bookId" , bookId);
+            MDC.put("scholarId",scholarId);
+            Integer numOfTimesRenewed = bookIdScholarIdMappingDao
+                            .findByBookIdAndScholarId(bookId,scholarId).getNumOfTimesRenewed();
+            if(numOfTimesRenewed == Constants.MAX_RENEWAL) {
+                throw new MaxRenewedBookException("This book has been renewed max no of times");
+            } else {
+                Float fineOnScholar = scholarCrudDao.findById(scholarId).get().getFine();
+                if(fineOnScholar > 0) {
+                    throw new FineChargeException("User has been charged fine. Please pay and renew books");
+                } else {
+                    BookIdScholarIdMapping bookIdScholarIdMapping =
+                            bookIdScholarIdMappingDao.findByBookIdAndScholarId(bookId,scholarId);
+                    bookIdScholarIdMapping.setNumOfTimesRenewed(Constants.MAX_RENEWAL);
+                    logger.info("renewing book for scholar ");
+                    bookIdScholarIdMappingDao.save(bookIdScholarIdMapping);
+                    logger.info("renewed book successfully ");
+                }
+            }
     }
 
     @Override
     public void renewBooksScholarRequestInBulk(List<RenewBookDto> renewBookDtoList) {
-
+        renewBookDtoList.forEach(renewBookDto -> {
+            Integer bookId = renewBookDto.getBookId();
+            Integer scholarId = renewBookDto.getScholarId();
+            this.renewBookScholarRequest(bookId,scholarId);
+        });
     }
 
     @Override

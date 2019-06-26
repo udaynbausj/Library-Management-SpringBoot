@@ -1,5 +1,8 @@
 package io.code.lms.Entities;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
@@ -18,9 +21,16 @@ public class BookIdScholarIdMapping {
     private Integer scholarId;
 
     @NotEmpty(message = "issuedon cannot be null ")
-    private Integer issuedOn;
+    private Date issuedOn;
+
+    @CreatedDate
     private Date createdAt;
+
+    @LastModifiedDate
     private Date updatedAt;
+
+    @Column(name = "num_of_times_renewed")
+    private Integer numOfTimesRenewed;
 
     public BookIdScholarIdMapping() {
     }
@@ -48,15 +58,13 @@ public class BookIdScholarIdMapping {
     public void setScholarId(Integer scholarId) {
         this.scholarId = scholarId;
     }
-
-    public Integer getIssuedOn() {
+    public Date getIssuedOn() {
         return issuedOn;
     }
 
-    public void setIssuedOn(Integer issuedOn) {
+    public void setIssuedOn(Date issuedOn) {
         this.issuedOn = issuedOn;
     }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -73,6 +81,14 @@ public class BookIdScholarIdMapping {
         this.updatedAt = updatedAt;
     }
 
+    public Integer getNumOfTimesRenewed() {
+        return numOfTimesRenewed;
+    }
+
+    public void setNumOfTimesRenewed(Integer numOfTimesRenewed) {
+        this.numOfTimesRenewed = numOfTimesRenewed;
+    }
+
     @Override
     public String toString() {
         return "BookIdScholarIdMapping{" +
@@ -82,6 +98,7 @@ public class BookIdScholarIdMapping {
                 ", issuedOn=" + issuedOn +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", numOfTimesRenewed=" + numOfTimesRenewed +
                 '}';
     }
 }

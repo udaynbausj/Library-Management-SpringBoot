@@ -14,9 +14,9 @@ public interface LibrarianService {
     void updateAvailabilityCountOfBook(Integer bookId,Integer count);
     Map<String ,String > addScholar(List<ScholarDto> scholarDtoList) throws Exception;
     void deleteScholar(BulkScholarIdRequestDto bulkScholarIdRequestDto);
-    void issueBookToScholar(Integer bookId);
-    void issueBooksToScholarInBulk(BulkBookIdRequestDto bulkBookIdRequestDto);
-    void renewBookScholarRequest(List<RenewBookDto>renewBookDtoList);
+    void issueBookToScholar(Integer bookId , Integer scholarId);
+    void issueBooksToScholarInBulk(BulkBookIdRequestDto bulkBookIdRequestDto, Integer scholarId);
+    void renewBookScholarRequest(Integer bookId,Integer scholarId);
     void renewBooksScholarRequestInBulk(List<RenewBookDto>renewBookDtoList);
     void reserveBookScholarRequest(List<ReserveBookDto>reserveBookDtos);
     void reserveBooksScholarRequestInBulk(List<ReserveBookDto>reserveBookDtos);
