@@ -2,7 +2,9 @@ package io.code.lms.Implementations;
 
 import io.code.lms.Dtos.*;
 import io.code.lms.Entities.Book;
+import io.code.lms.Entities.BookIdScholarIdMapping;
 import io.code.lms.Entities.Scholar;
+import io.code.lms.Exceptions.CustomExceptions.DependencyException;
 import io.code.lms.Exceptions.CustomExceptions.RecordNotFoundException;
 import io.code.lms.Exceptions.SQLExceptions.DBExceptionBase;
 import io.code.lms.Repositories.BookCrudDao;
@@ -27,7 +29,7 @@ public class LibrarianServiceImpl implements LibrarianService {
     private BookCrudDao bookCrudDao;
 
     @Autowired
-    private BookIdScholarIdMappingDao bookIdScholarIdMapping;
+    private BookIdScholarIdMappingDao bookIdScholarIdMappingDao;
 
     private static Logger logger = Logger.getLogger(LibrarianServiceImpl.class);
 
@@ -53,6 +55,12 @@ public class LibrarianServiceImpl implements LibrarianService {
         Consumer<Integer> bookIdConsumer = bookId -> {
             Optional<Book>optional =  (bookCrudDao.findById(bookId));
             if(optional.isPresent()) {
+                Optional<BookIdScholarIdMapping>optional1 =
+                        Optional.ofNullable(bookIdScholarIdMappingDao.findByBookId(bookId));
+                if(optional1.isPresent()) {
+                    throw new DependencyException("Book can't be deleted as, it is associated with scholar : "
+                            + optional1.get().getScholarId());
+                }
                 logger.info("deleting book-id " + bookId);
                 bookCrudDao.deleteById(bookId);
                 logger.info("successfully deleted the book ");
@@ -122,10 +130,17 @@ public class LibrarianServiceImpl implements LibrarianService {
         //you cannot delete a scholar if this scholar has any book with him.
         //check if this scholar has ansy bookId associated with him
         Consumer<Integer> scholarIdConsumer = scholarId -> {
-
+            Optional<BookIdScholarIdMapping>optional = Optional.ofNullable(
+                    bookIdScholarIdMappingDao.findByScholarId(scholarId));
+            if(optional.isPresent()) {
+                throw new DependencyException("Scholar cannot be deleted as a book with id : {} is " +
+                        "associated with him" + optional.get().getBookId());
+            }
+            logger.info("Deleting scholar .. ");
+            scholarCrudDao.deleteById(scholarId);
+            logger.info("successfully deleted scholar ");
         };
         scholarIdList.forEach(scholarIdConsumer);
-
     }
 
     @Override
