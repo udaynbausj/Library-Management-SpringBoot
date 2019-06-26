@@ -1,8 +1,6 @@
 package io.code.lms.Exceptions.SQLExceptions;
 
-import java.sql.SQLException;
-
-public class DBExceptionBase extends SQLException {
+public class DBExceptionBase extends Exception {
     public DBExceptionBase(String reason) {
         super(reason);
     }

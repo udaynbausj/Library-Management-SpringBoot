@@ -1,8 +1,11 @@
 package io.code.lms.Implementations;
 
 import io.code.lms.Dtos.*;
+import io.code.lms.Entities.Book;
 import io.code.lms.Entities.Scholar;
+import io.code.lms.Exceptions.CustomExceptions.RecordNotFoundException;
 import io.code.lms.Exceptions.SQLExceptions.DBExceptionBase;
+import io.code.lms.Repositories.BookCrudDao;
 import io.code.lms.Repositories.ScholarCrudDao;
 import io.code.lms.Services.LibrarianService;
 import org.apache.log4j.Logger;
@@ -10,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Consumer;
+
 
 @Service
 public class LibrarianServiceImpl implements LibrarianService {
@@ -17,31 +22,67 @@ public class LibrarianServiceImpl implements LibrarianService {
     @Autowired
     private ScholarCrudDao scholarCrudDao;
 
+    @Autowired
+    private BookCrudDao bookCrudDao;
+
     private static Logger logger = Logger.getLogger(LibrarianServiceImpl.class);
 
     @Override
     public void addBooks(List<BookDto> bookDtoList) {
-
+        Consumer<BookDto> bookDtoConsumer = bookDto -> {
+            Book book = new Book();
+            book.setAvailabilityCount(bookDto.getAvailabilityCount());
+            book.setPublication(bookDto.getPublication());
+            book.setTitle(bookDto.getTitle());
+            logger.info("Saving book entity ... " + book.toString());
+            bookCrudDao.save(book);
+            logger.info("Book saved successfully ");
+        };
+        bookDtoList.forEach(bookDtoConsumer);
     }
 
     @Override
     public void deleteBooks(BulkBookIdRequestDto bulkBookIdRequestDto) {
-
+        List<Integer>bookIdList = bulkBookIdRequestDto.getBookIds();
+        Consumer<Integer> bookIdConsumer = bookId -> {
+            Optional<Book>optional =  (bookCrudDao.findById(bookId));
+            if(optional.isPresent()) {
+                logger.info("deleting book-id " + bookId);
+                bookCrudDao.deleteById(bookId);
+                logger.info("successfully deleted the book ");
+            } else {
+                logger.error("Book with Id not found " + bookId);
+                throw new RecordNotFoundException("Record not found exception");
+            }
+        };
+        bookIdList.forEach(bookIdConsumer);
     }
 
     @Override
-    public void getBook(BulkBookIdRequestDto bulkBookIdRequestDto) {
-
+    public Book getBook(BulkBookIdRequestDto bulkBookIdRequestDto) {
+        return bookCrudDao.findById(bulkBookIdRequestDto.getBookIds().get(0))
+                          .orElseThrow(() -> new RecordNotFoundException("Record not found"));
     }
 
     @Override
-    public void getAllBooks() {
-
+    public List<Book> getAllBooks() {
+        List<Book>bookList = bookCrudDao.findAll();
+        bookList.forEach(book -> {
+            logger.info("Book : " + book);
+        });
+        return bookList;
     }
 
     @Override
     public void updateAvailabilityCountOfBook(Integer bookId, Integer count) {
-
+        Optional<Book>optionalBook = bookCrudDao.findById(bookId);
+        if(optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setAvailabilityCount(count);
+            bookCrudDao.save(book);
+        } else {
+            throw new RecordNotFoundException("Record not found for given bookId : " + bookId);
+        }
     }
 
     @Override
