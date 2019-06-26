@@ -43,6 +43,8 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public void deleteBooks(BulkBookIdRequestDto bulkBookIdRequestDto) {
+        //while deleting a book , we need to check if this book is associated with any scholar.
+        //if this book is associated with any scholar, then deletion cannot be performed
         List<Integer>bookIdList = bulkBookIdRequestDto.getBookIds();
         Consumer<Integer> bookIdConsumer = bookId -> {
             Optional<Book>optional =  (bookCrudDao.findById(bookId));
@@ -112,6 +114,13 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public void deleteScholar(BulkScholarIdRequestDto bulkScholarIdRequestDto) {
+        List<Integer> scholarIdList = bulkScholarIdRequestDto.getScholarIds();
+        //you cannot delete a scholar if this scholar has any book with him.
+        //check if this scholar has ansy bookId associated with him
+        Consumer<Integer> scholarIdConsumer = scholarId -> {
+
+        };
+        scholarIdList.forEach(scholarIdConsumer);
 
     }
 
