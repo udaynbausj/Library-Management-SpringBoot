@@ -135,9 +135,7 @@ public class LibrarianServiceImpl implements LibrarianService {
     @Override
     public void deleteScholarInBulk(BulkScholarIdRequestDto bulkScholarIdRequestDto) {
         List<Integer> scholarIdList = bulkScholarIdRequestDto.getScholarIds();
-        scholarIdList.forEach(scholarId -> {
-            this.deleteScholar(scholarId);
-        });
+        scholarIdList.forEach(this::deleteScholar);
     }
 
     @Override

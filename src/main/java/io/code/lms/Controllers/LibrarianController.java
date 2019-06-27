@@ -2,6 +2,7 @@ package io.code.lms.Controllers;
 
 import io.code.lms.Dtos.BulkScholarIdRequestDto;
 import io.code.lms.Dtos.ScholarDto;
+import io.code.lms.Exceptions.CustomExceptions.CustomRuntimeException;
 import io.code.lms.Exceptions.SQLExceptions.DBExceptionBase;
 import io.code.lms.Implementations.LibrarianServiceImpl;
 import io.code.lms.Routes.LibrarianRoutes;
@@ -30,21 +31,25 @@ public class LibrarianController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "success in saving to db",response = Map.class),
             @ApiResponse(code = 500, message = "Internal server error ",response = Map.class)})
     @PostMapping(value = LibrarianRoutes.librarianScholarCrud)
-    public ResponseEntity<?> addScholar(@RequestBody List<ScholarDto> scholarDtoList) {
+    public ResponseEntity<?> addScholar(@RequestBody ScholarDto scholarDto) {
         ResponseEntity responseEntity = null;
         try {
-            responseEntity = new ResponseEntity(librarianService.addScholar(scholarDtoList),
-                                                                            HttpStatus.OK);
-        } catch (DBExceptionBase db) {
-            responseEntity = new ResponseEntity(db.getLocalizedMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+            librarianService.addScholar(scholarDto);
+            responseEntity = new ResponseEntity<>("status",HttpStatus.OK);
+        } catch (CustomRuntimeException cre) {
+            responseEntity = new ResponseEntity<>(cre.getLocalizedMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return responseEntity;
     }
 
     public ResponseEntity<?> deleteScholar(@RequestBody Integer scholarId) {
-        ResponseEntity<?>responseEntity = null;
+        ResponseEntity responseEntity = null;
         try {
-            responseEntity = new ResponseEntity<>(librarianService.deleteScholar(););
+            librarianService.deleteScholar(scholarId);
+            responseEntity = new ResponseEntity("status",HttpStatus.OK);
+        } catch (CustomRuntimeException cre) {
+            responseEntity = new ResponseEntity (cre.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return responseEntity;
     }
 }
