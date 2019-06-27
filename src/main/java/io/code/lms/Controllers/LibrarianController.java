@@ -6,6 +6,7 @@ import io.code.lms.Implementations.LibrarianServiceImpl;
 import io.code.lms.Routes.LibrarianRoutes;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class LibrarianController {
     private LibrarianServiceImpl librarianService;
 
     @ApiOperation(value = "adding scholar into Library Database")
-    @ApiResponse(code = 200,message = "success in saving to db",response = Map.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "success in saving to db",response = Map.class),
+            @ApiResponse(code = 500, message = "Internal server error ",response = Map.class)})
     @PostMapping(value = LibrarianRoutes.librarianScholarCrud)
     public ResponseEntity<?> addScholar(@RequestBody List<ScholarDto> scholarDtoList) {
         ResponseEntity responseEntity = null;

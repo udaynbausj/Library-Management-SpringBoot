@@ -226,7 +226,7 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public void reserveBookScholarRequest(List<ReserveBookDto> reserveBookDtos) {
-
+        
     }
 
     @Override
