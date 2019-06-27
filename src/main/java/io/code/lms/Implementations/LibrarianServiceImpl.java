@@ -129,7 +129,7 @@ public class LibrarianServiceImpl implements LibrarianService {
                     logger.info("Deleting scholar .. ");
                     scholarCrudDao.deleteById(scholarId);
                     logger.info("successfully deleted scholar ");
-                } , () -> logger.error("No scholar found with given id"));
+                } , () -> new RecordNotFoundException("No scholar found with given id"));
     }
 
     @Override
