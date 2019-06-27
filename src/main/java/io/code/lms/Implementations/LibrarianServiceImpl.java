@@ -117,24 +117,7 @@ public class LibrarianServiceImpl implements LibrarianService {
     @Override
     public Map<String ,String > addScholarInBulk(List<ScholarDto> scholarDtoList) throws DBExceptionBase {
         Map<String ,String >result = new HashMap<>();
-        Iterator iterator = scholarDtoList.iterator();
-        while(iterator.hasNext()) {
-            ScholarDto scholarDto = (ScholarDto) iterator.next();
-            Scholar scholar = new Scholar();
-            scholar.setName(scholarDto.getName());
-            scholar.setStatus(scholarDto.getStatus());
-            logger.info("Saving scholar entity :  " + scholar.toString());
-            try {
-                Scholar scholarRecord = scholarCrudDao.save(scholar);
-                if(null == scholarRecord)
-                    throw new DBExceptionBase("Exception while saving Entity to DB");
-            } catch (DBExceptionBase sqle) {
-                logger.error("Exception while saving entity to DB: "
-                        + sqle.getLocalizedMessage());
-                throw sqle;
-            }
-            logger.info("Successfully saved into db");
-        }
+        scholarDtoList.forEach(this::addScholar);
         result.put("status","success");
         return result;
     }
