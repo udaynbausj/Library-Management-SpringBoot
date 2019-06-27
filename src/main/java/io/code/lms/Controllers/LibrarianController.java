@@ -1,5 +1,6 @@
 package io.code.lms.Controllers;
 
+import io.code.lms.Dtos.BulkScholarIdRequestDto;
 import io.code.lms.Dtos.ScholarDto;
 import io.code.lms.Exceptions.SQLExceptions.DBExceptionBase;
 import io.code.lms.Implementations.LibrarianServiceImpl;
@@ -38,5 +39,12 @@ public class LibrarianController {
             responseEntity = new ResponseEntity(db.getLocalizedMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return responseEntity;
+    }
+
+    public ResponseEntity<?> deleteScholar(@RequestBody Integer scholarId) {
+        ResponseEntity<?>responseEntity = null;
+        try {
+            responseEntity = new ResponseEntity<>(librarianService.deleteScholar(););
+        }
     }
 }

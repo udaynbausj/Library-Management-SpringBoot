@@ -12,8 +12,10 @@ public interface LibrarianService {
     Book getBook(BulkBookIdRequestDto bulkBookIdRequestDto);
     List<Book> getAllBooks();
     void updateAvailabilityCountOfBook(Integer bookId,Integer count);
-    Map<String ,String > addScholar(List<ScholarDto> scholarDtoList) throws Exception;
-    void deleteScholar(BulkScholarIdRequestDto bulkScholarIdRequestDto);
+    Map<String ,String > addScholarInBulk(List<ScholarDto> scholarDtoList) throws Exception;
+    void addScholar(ScholarDto scholarId);
+    void deleteScholarInBulk(BulkScholarIdRequestDto bulkScholarIdRequestDto);
+    void deleteScholar(Integer scholarId);
     void issueBookToScholar(Integer bookId , Integer scholarId);
     void issueBooksToScholarInBulk(BulkBookIdRequestDto bulkBookIdRequestDto, Integer scholarId);
     void renewBookScholarRequest(Integer bookId,Integer scholarId);

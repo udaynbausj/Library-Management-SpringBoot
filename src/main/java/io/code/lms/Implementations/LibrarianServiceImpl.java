@@ -102,7 +102,20 @@ public class LibrarianServiceImpl implements LibrarianService {
     }
 
     @Override
-    public Map<String ,String > addScholar(List<ScholarDto> scholarDtoList) throws DBExceptionBase {
+    public void addScholar(ScholarDto scholarDto) {
+        Scholar scholar = new Scholar();
+        scholar.setNumOfBooksPresent(Constants.INITIAL_NUMBER_OF_BOOKS_FOR_SCHOLAR);
+        scholar.setStatus(Constants.DEFAULT_SCHOLAR_STATUS);
+        scholar.setName(scholarDto.getName());
+        scholar.setFine(Constants.INITIAL_FINE_FOR_SCHOLAR);
+        MDC.put("scholarName" , scholar.getName());
+        logger.info("saving scholar entity : " + scholar.toString());
+        scholarCrudDao.save(scholar);
+        logger.info("scholar entity saved successfully ");
+    }
+
+    @Override
+    public Map<String ,String > addScholarInBulk(List<ScholarDto> scholarDtoList) throws DBExceptionBase {
         Map<String ,String >result = new HashMap<>();
         Iterator iterator = scholarDtoList.iterator();
         while(iterator.hasNext()) {
@@ -127,22 +140,21 @@ public class LibrarianServiceImpl implements LibrarianService {
     }
 
     @Override
-    public void deleteScholar(BulkScholarIdRequestDto bulkScholarIdRequestDto) {
+    public void deleteScholar(Integer scholarId) {
+        scholarCrudDao.findById(scholarId)
+                .ifPresentOrElse(scholar -> {
+                    logger.info("Deleting scholar .. ");
+                    scholarCrudDao.deleteById(scholarId);
+                    logger.info("successfully deleted scholar ");
+                } , () -> logger.error("No scholar found with given id"));
+    }
+
+    @Override
+    public void deleteScholarInBulk(BulkScholarIdRequestDto bulkScholarIdRequestDto) {
         List<Integer> scholarIdList = bulkScholarIdRequestDto.getScholarIds();
-        //you cannot delete a scholar if this scholar has any book with him.
-        //check if this scholar has ansy bookId associated with him
-        Consumer<Integer> scholarIdConsumer = scholarId -> {
-            Optional< List<BookIdScholarIdMapping> >optional = Optional.ofNullable(
-                    bookIdScholarIdMappingDao.findByScholarId(scholarId));
-            if(optional.isPresent()) {
-                throw new DependencyException("Scholar cannot be deleted as a book  is " +
-                        "associated with him");
-            }
-            logger.info("Deleting scholar .. ");
-            scholarCrudDao.deleteById(scholarId);
-            logger.info("successfully deleted scholar ");
-        };
-        scholarIdList.forEach(scholarIdConsumer);
+        scholarIdList.forEach(scholarId -> {
+            this.deleteScholar(scholarId);
+        });
     }
 
     @Override
