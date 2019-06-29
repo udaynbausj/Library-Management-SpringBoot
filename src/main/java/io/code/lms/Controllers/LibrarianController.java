@@ -42,6 +42,9 @@ public class LibrarianController {
         return responseEntity;
     }
 
+    @ApiOperation(value = "delete a scholar")
+    @ApiResponses(value = {@ApiResponse(code = 200,message = "success in deleting scholar",
+                                        response = Map.class)})
     public ResponseEntity<?> deleteScholar(@RequestBody Integer scholarId) {
         ResponseEntity responseEntity = null;
         try {
@@ -52,4 +55,6 @@ public class LibrarianController {
         }
         return responseEntity;
     }
+
+
 }
