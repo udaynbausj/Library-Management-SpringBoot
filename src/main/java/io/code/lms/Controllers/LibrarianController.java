@@ -1,5 +1,6 @@
 package io.code.lms.Controllers;
 
+import io.code.lms.Dtos.BookDto;
 import io.code.lms.Dtos.BulkScholarIdRequestDto;
 import io.code.lms.Dtos.ScholarDto;
 import io.code.lms.Exceptions.CustomExceptions.CustomRuntimeException;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,6 +47,7 @@ public class LibrarianController {
     @ApiOperation(value = "delete a scholar")
     @ApiResponses(value = {@ApiResponse(code = 200,message = "success in deleting scholar",
                                         response = Map.class)})
+    @DeleteMapping(value = LibrarianRoutes.librarianScholarCrud)
     public ResponseEntity<?> deleteScholar(@RequestBody Integer scholarId) {
         ResponseEntity responseEntity = null;
         try {
@@ -52,6 +55,21 @@ public class LibrarianController {
             responseEntity = new ResponseEntity("status",HttpStatus.OK);
         } catch (CustomRuntimeException cre) {
             responseEntity = new ResponseEntity (cre.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
+    }
+
+    @ApiOperation(value = "Add book to library")
+    @ApiResponses(value = {@ApiResponse(code = 200,message = "Success in saving book to library",
+                            response = String.class)})
+    @PostMapping(value = LibrarianRoutes.librarianBookCrud)
+    public ResponseEntity<?> addBookToLibrary(@Valid @RequestBody BookDto bookDto) {
+        ResponseEntity responseEntity = null;
+        try {
+            librarianService.addBook(bookDto);
+            responseEntity = new ResponseEntity("Status",HttpStatus.OK);
+        } catch (CustomRuntimeException cre) {
+            responseEntity = new ResponseEntity(cre.getStackTrace(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return responseEntity;
     }

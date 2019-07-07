@@ -124,12 +124,14 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public void deleteScholar(Integer scholarId) {
-        scholarCrudDao.findById(scholarId)
-                .ifPresentOrElse(scholar -> {
-                    logger.info("Deleting scholar .. ");
-                    scholarCrudDao.deleteById(scholarId);
-                    logger.info("successfully deleted scholar ");
-                } , () -> new RecordNotFoundException("No scholar found with given id"));
+//        scholarCrudDao.findById(scholarId)
+//                .ifPresentOrElse(scholar -> {
+//                    logger.info("Deleting scholar .. ");
+//                    scholarCrudDao.deleteById(scholarId);
+//                    logger.info("successfully deleted scholar ");
+//                } , () -> new RecordNotFoundException("No scholar found with given id"));
+        scholarCrudDao.findById(scholarId).orElseThrow(() -> new RecordNotFoundException("No record found with " +
+                "given scholarId "));
     }
 
     @Override
@@ -229,6 +231,11 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public void updateScholarFine(Integer scholarId, Integer amount) {
+
+    }
+
+    @Override
+    public void addBook(BookDto bookDto) {
 
     }
 }

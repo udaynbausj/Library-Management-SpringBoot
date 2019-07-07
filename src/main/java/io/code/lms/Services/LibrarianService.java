@@ -23,4 +23,5 @@ public interface LibrarianService {
     void reserveBookScholarRequest(List<ReserveBookDto>reserveBookDtos);
     void reserveBooksScholarRequestInBulk(List<ReserveBookDto>reserveBookDtos);
     void updateScholarFine(Integer scholarId,Integer amount);
+    void addBook(BookDto bookDto);
 }
