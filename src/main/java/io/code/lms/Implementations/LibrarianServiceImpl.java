@@ -16,6 +16,7 @@ import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -235,7 +236,10 @@ public class LibrarianServiceImpl implements LibrarianService {
     }
 
     @Override
-    public void addBook(BookDto bookDto) {
-
+    public void addBook(@Valid BookDto bookDto) {
+        Book book = new Book();
+        book.setAvailabilityCount(bookDto.getAvailabilityCount());
+        book.setTitle(bookDto.getTitle());
+        bookCrudDao.save(book);
     }
 }
